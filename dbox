@@ -1,0 +1,23 @@
+#!/bin/bash
+
+ARG1=$1
+ARG2=$2
+VERSION="0.1"
+
+if [ "$ARG1" == "install" ] && [ "$ARG2" == "server" ]; then
+source /etc/os-release
+
+    if [ "$ID" == "debian" ] && [ "$VERSION_ID" == "10" ]; then
+        echo "Debian 10"
+    elif [ "$ID" == "debian" ] && [ "$VERSION_ID" == "9" ]; then
+        echo "Debian 9"
+    else
+        echo "OS NOT SUPPORTED"
+    fi
+
+elif [ "$ARG1" == "install" ] && [ "$ARG2" == "client" ]; then
+    echo "ciao"
+else
+    echo -e "\nDBox - Version: $VERSION\n"
+    echo -e "Easy tool to quickly manage lxc containers by command line\n"
+fi
