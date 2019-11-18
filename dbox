@@ -4,13 +4,43 @@ ARG1=$1
 ARG2=$2
 VERSION="0.1"
 
+
+if [[ $EUID -ne 0 ]]; then
+    echo "DBox requires root privileges"
+    exit 1
+fi
+
+
 if [ "$ARG1" == "install" ] && [ "$ARG2" == "server" ]; then
 source /etc/os-release
 
     if [ "$ID" == "debian" ] && [ "$VERSION_ID" == "10" ]; then
-        echo "Debian 10"
+        #echo -e "\nDebian 10 - DBox Installation"
+        #sleep 0.5
+        echo "OS NOT SUPPORTED"
+
+
+
+        ######## DEBIAN 9 INSTALLATION ############
     elif [ "$ID" == "debian" ] && [ "$VERSION_ID" == "9" ]; then
-        echo "Debian 9"
+        echo -e "\nDebian 9 - DBox Installation\n"
+        sleep 1
+
+        apt -y install lxc
+        touch /etc/default/lxc-net
+        echo -n 'USE_LXC_BRIDGE="true"' > /etc/default/lxc-net
+
+        cat > /etc/lxc/default.conf << EOF
+lxc.network.type = veth
+lxc.network.link = lxcbr0
+lxc.network.flags = up
+lxc.network.hwaddr = 00:16:3e:xx:xx:xx
+EOF
+
+        service lxc-net restart
+
+        ######## END DEBIAN 9 INSTALLATION ############
+
     else
         echo "OS NOT SUPPORTED"
     fi
