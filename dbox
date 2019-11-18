@@ -3,6 +3,9 @@
 ARG1=$1
 ARG2=$2
 VERSION="0.1"
+BUILD="0.1.1"
+ARCH="" #i386 || amd64 || arm64 || armhf
+
 
 
 if [[ $EUID -ne 0 ]]; then
@@ -47,6 +50,9 @@ EOF
 
 elif [ "$ARG1" == "install" ] && [ "$ARG2" == "client" ]; then
     echo "ciao"
+
+#lxc-create -n test1 -t debian -- -r stretch -a amd64
+
 else
     echo -e "\nDBox - Version: $VERSION\n"
     echo -e "Easy tool to quickly manage lxc containers by command line\n"
