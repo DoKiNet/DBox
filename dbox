@@ -3,7 +3,7 @@
 ARG1=$1
 ARG2=$2
 VERSION="0.1"
-BUILD="0.1.6"
+BUILD="0.1.7"
 ARCH="" #i386 || amd64 || arm64 || armhf  uname -m
 
 if [ "$(uname -m)" == "x86_64" ]; then
