@@ -3,7 +3,7 @@
 ARG1=$1
 ARG2=$2
 VERSION="0.1"
-BUILD="0.1.3"
+BUILD="0.1.4"
 ARCH="" #i386 || amd64 || arm64 || armhf  uname -m
 
 if [ "$(uname -m)" == "x86_64" ]; then
@@ -45,6 +45,9 @@ EOF
 
         service lxc-net restart
 
+        echo -e "\nDBOX SERVER - INSTALLED"
+        $0 install client
+
         ######## END DEBIAN 9 INSTALLATION ############
 
     else
@@ -52,7 +55,14 @@ EOF
     fi
 
 elif [ "$ARG1" == "install" ] && [ "$ARG2" == "client" ]; then
-    echo "install client"
+    cp ./dbox /bin/dbox
+	chown root:root /bin/dbox
+	chmod 770 /bin/dbox
+	echo -e "\nDBOX CLIENT - INSTALLED"
+
+elif [ "$ARG1" == "uninstall" ] && [ "$ARG2" == "client" ]; then
+    rm /bin/dbox
+	echo -e "\nDBOX CLIENT - UNINSTALLED"
 
 elif [ "$ARG1" == "create" ] && [ "$ARG2" != "" ]; then
     if [ "ARCH" == "" ]; then
