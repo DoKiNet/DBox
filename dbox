@@ -3,7 +3,7 @@
 ARG1=$1
 ARG2=$2
 VERSION="0.1"
-BUILD="0.1.4"
+BUILD="0.1.5"
 ARCH="" #i386 || amd64 || arm64 || armhf  uname -m
 
 if [ "$(uname -m)" == "x86_64" ]; then
@@ -93,12 +93,34 @@ elif [ "$ARG1" == "list" ] && [ "$ARG2" == "" ]; then
 
 
 elif [ "$ARG1" == "list" ] && [ "$ARG2" == "containers" ]; then
-    echo "list containers"
+    echo -e "\n"
+    lxc-ls --fancy
+    echo -e "\n"
 
 elif [ "$ARG1" == "list" ] && [ "$ARG2" == "templates" ]; then
     echo -e "\n  - Debian10"
     echo -e "  - Debian9"
+    echo -e "\n"
 
+elif [ "$ARG1" == "start" ]; then
+    if [ "$ARG2" != "" ]; then
+        lxc-start -n $ARG2
+
+    else
+        echo -e "\n"
+        lxc-ls --fancy
+        echo -e "\n"
+    fi
+
+elif [ "$ARG1" == "stop" ]; then
+    if [ "$ARG2" != "" ]; then
+        lxc-stop -n $ARG2
+
+    else
+        echo -e "\n"
+        lxc-ls --fancy
+        echo -e "\n"
+    fi
 
 else
     echo -e "\nDBox - Version: $VERSION\n"
