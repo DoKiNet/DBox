@@ -3,7 +3,7 @@
 ARG1=$1
 ARG2=$2
 VERSION="0.1"
-BUILD="0.1.2"
+BUILD="0.1.3"
 ARCH="" #i386 || amd64 || arm64 || armhf  uname -m
 
 if [ "$(uname -m)" == "x86_64" ]; then
@@ -52,11 +52,43 @@ EOF
     fi
 
 elif [ "$ARG1" == "install" ] && [ "$ARG2" == "client" ]; then
-    echo "ciao"
+    echo "install client"
 
 elif [ "$ARG1" == "create" ] && [ "$ARG2" != "" ]; then
-    echo "create something"
-#lxc-create -n test1 -t debian -- -r stretch -a amd64
+    if [ "ARCH" == "" ]; then
+        echo -e "\nCPU ARCHITECTURE NOT SUPPORTED\n"
+        exit
+    fi
+    echo -ne "\nContainer Name: "
+    read CONTAINER_NAME
+    echo -e "\n"
+
+    if [ "$ARG2" == "debian10" ]; then
+        lxc-create -n $CONTAINER_NAME -t debian -- -r buster -a $ARCH
+        echo -e "\n"
+        echo -e "$CONTAINER_NAME CREATED\n"
+    elif [ "$ARG2" == "debian9" ]; then
+        lxc-create -n $CONTAINER_NAME -t debian -- -r stretch -a $ARCH
+        echo -e "\n"
+        echo -e "$CONTAINER_NAME CREATED\n"
+    else
+        echo -e "TEMPLATE: $ARG2  NOT EXISTS\n"
+        $0 list templates
+    fi
+
+
+
+elif [ "$ARG1" == "list" ] && [ "$ARG2" == "" ]; then
+    $0 list containers
+
+
+elif [ "$ARG1" == "list" ] && [ "$ARG2" == "containers" ]; then
+    echo "list containers"
+
+elif [ "$ARG1" == "list" ] && [ "$ARG2" == "templates" ]; then
+    echo -e "\n  - Debian10"
+    echo -e "  - Debian9"
+
 
 else
     echo -e "\nDBox - Version: $VERSION\n"
