@@ -3,8 +3,24 @@
 ARG1=$1
 ARG2=$2
 VERSION="0.1"
-BUILD="0.1.7"
+BUILD="0.1.8"
 ARCH="" #i386 || amd64 || arm64 || armhf  uname -m
+
+containerExists(){
+    CONTAINER_LIST=$(lxc-ls --line)
+    RET="false"
+
+    for line in $CONTAINER_LIST;  do
+        if [ "$line" == "$ARG2" ]; then
+                RET="true"
+        fi
+    done
+
+echo $RET
+}
+
+
+
 
 if [ "$(uname -m)" == "x86_64" ]; then
     ARCH="amd64"
@@ -99,8 +115,8 @@ elif [ "$ARG1" == "list" ] && [ "$ARG2" == "containers" ]; then
     echo -e "\n"
 
 elif [ "$ARG1" == "list" ] && [ "$ARG2" == "templates" ]; then
-    echo -e "\n  - Debian10"
-    echo -e "  - Debian9"
+    echo -e "\n  - debian10"
+    echo -e "  - debian9"
     echo -e "\n"
 
 elif [ "$ARG1" == "start" ]; then
@@ -116,6 +132,18 @@ elif [ "$ARG1" == "start" ]; then
 elif [ "$ARG1" == "stop" ]; then
     if [ "$ARG2" != "" ]; then
         lxc-stop -n $ARG2
+
+    else
+        echo -e "\n"
+        lxc-ls --fancy
+        echo -e "\n"
+    fi
+
+elif [ "$ARG1" == "delete" ]; then
+    if [ "$ARG2" != "" ] && [ $(containerExists) == "true" ]; then
+        echo -e "\n"
+        lxc-destroy -sf -n $ARG2
+        echo -e "\n"
 
     else
         echo -e "\n"
