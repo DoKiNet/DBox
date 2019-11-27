@@ -3,7 +3,7 @@
 ARG1=$1
 ARG2=$2
 VERSION="0.1"
-BUILD="0.1.8"
+BUILD="0.1.9"
 ARCH="" #i386 || amd64 || arm64 || armhf  uname -m
 
 containerExists(){
@@ -120,7 +120,7 @@ elif [ "$ARG1" == "list" ] && [ "$ARG2" == "templates" ]; then
     echo -e "\n"
 
 elif [ "$ARG1" == "start" ]; then
-    if [ "$ARG2" != "" ]; then
+    if [ "$ARG2" != "" ] && [ "$(containerExists)" == "true" ]; then
         lxc-start -n $ARG2
 
     else
@@ -130,7 +130,7 @@ elif [ "$ARG1" == "start" ]; then
     fi
 
 elif [ "$ARG1" == "stop" ]; then
-    if [ "$ARG2" != "" ]; then
+    if [ "$ARG2" != "" ] && [ "$(containerExists)" == "true" ] ; then
         lxc-stop -n $ARG2
 
     else
