@@ -3,7 +3,7 @@
 ARG1=$1
 ARG2=$2
 VERSION="0.1"
-BUILD="0.1.9"
+BUILD="0.1.10"
 ARCH="" #i386 || amd64 || arm64 || armhf  uname -m
 
 containerExists(){
@@ -138,6 +138,17 @@ elif [ "$ARG1" == "stop" ]; then
         lxc-ls --fancy
         echo -e "\n"
     fi
+
+elif [ "$ARG1" == "connect" ]; then
+    if [ "$ARG2" != "" ] && [ "$(containerExists)" == "true" ]; then
+        lxc-attach -n $ARG2
+
+    else
+        echo -e "\n"
+        lxc-ls --fancy
+        echo -e "\n"
+    fi
+
 
 elif [ "$ARG1" == "delete" ]; then
     if [ "$ARG2" != "" ] && [ $(containerExists) == "true" ]; then
