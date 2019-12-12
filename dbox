@@ -3,7 +3,7 @@
 ARG1=$1
 ARG2=$2
 VERSION="0.1"
-BUILD="0.1.10"
+BUILD="0.1.11"
 ARCH="" #i386 || amd64 || arm64 || armhf  uname -m
 
 containerExists(){
@@ -98,6 +98,10 @@ elif [ "$ARG1" == "create" ] && [ "$ARG2" != "" ]; then
         lxc-create -n $CONTAINER_NAME -t debian -- -r stretch -a $ARCH
         echo -e "\n"
         echo -e "$CONTAINER_NAME CREATED\n"
+    elif [ "$ARG2" == "ubuntu1804" ]; then
+        lxc-create -t download -n $CONTAINER_NAME -- -d ubuntu -r bionic -a $ARCH
+        echo -e "\n"
+        echo -e "$CONTAINER_NAME CREATED\n"
     else
         echo -e "TEMPLATE: $ARG2  NOT EXISTS\n"
         $0 list templates
@@ -117,6 +121,7 @@ elif [ "$ARG1" == "list" ] && [ "$ARG2" == "containers" ]; then
 elif [ "$ARG1" == "list" ] && [ "$ARG2" == "templates" ]; then
     echo -e "\n  - debian10"
     echo -e "  - debian9"
+    echo -e "  - ubuntu1804"
     echo -e "\n"
 
 elif [ "$ARG1" == "start" ]; then
