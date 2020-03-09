@@ -3,7 +3,7 @@
 ARG1=$1
 ARG2=$2
 VERSION="0.1"
-BUILD="0.1.12"
+BUILD="0.1.13"
 ARCH="" #i386 || amd64 || arm64 || armhf  uname -m
 
 containerExists(){
@@ -36,11 +36,29 @@ fi
 if [ "$ARG1" == "install" ] && [ "$ARG2" == "server" ]; then
 source /etc/os-release
 
+        ######## DEBIAN 10 INSTALLATION ############
     if [ "$ID" == "debian" ] && [ "$VERSION_ID" == "10" ]; then
         echo -e "\nDebian 10 - DBox Installation"
         sleep 1
 
-        
+        apt -y install lxc
+
+        cat > /etc/lxc/default.conf << EOF
+lxc.net.0.type = veth
+lxc.net.0.link = virbr0
+lxc.net.0.flags = up
+lxc.apparmor.profile = generated
+lxc.apparmor.allow_nesting = 1
+EOF
+
+        apt install -y libvirt-clients libvirt-daemon-system iptables ebtables dnsmasq-base
+        virsh net-start default
+        virsh net-autostart default
+
+        echo -e "\nDBOX SERVER - INSTALLED"
+        $0 install client
+
+        ######## END DEBIAN 10 INSTALLATION ############
 
 
         ######## DEBIAN 9 INSTALLATION ############
