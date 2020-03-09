@@ -3,7 +3,7 @@
 ARG1=$1
 ARG2=$2
 VERSION="0.1"
-BUILD="0.1.11"
+BUILD="0.1.12"
 ARCH="" #i386 || amd64 || arm64 || armhf  uname -m
 
 containerExists(){
@@ -37,10 +37,10 @@ if [ "$ARG1" == "install" ] && [ "$ARG2" == "server" ]; then
 source /etc/os-release
 
     if [ "$ID" == "debian" ] && [ "$VERSION_ID" == "10" ]; then
-        #echo -e "\nDebian 10 - DBox Installation"
-        #sleep 0.5
-        echo "OS NOT SUPPORTED"
+        echo -e "\nDebian 10 - DBox Installation"
+        sleep 1
 
+        
 
 
         ######## DEBIAN 9 INSTALLATION ############

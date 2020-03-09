@@ -13,6 +13,16 @@ DBox client installation
 dbox install client
 ```
 
+List containers
+```
+dbox list containers
+```
+
+List container templates
+```
+dbox list templates
+```
+
 Create container
 ```
 dbox create debian10
