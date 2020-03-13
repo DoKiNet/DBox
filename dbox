@@ -3,7 +3,7 @@
 ARG1=$1
 ARG2=$2
 VERSION="0.1"
-BUILD="0.1.14"
+BUILD="0.1.15"
 ARCH="" #i386 || amd64 || arm64 || armhf  uname -m
 
 containerExists(){
@@ -93,7 +93,6 @@ elif [ "$ARG1" == "install" ] && [ "$ARG2" == "client" ]; then
 	chown root:root /bin/dbox
 	chmod 770 /bin/dbox
 
-    #IF cartella e file non esistono
     mkdir -p /etc/dbox
 
     if [ -f "/etc/dbox/portmappings" ]; then
@@ -147,12 +146,34 @@ elif [ "$ARG1" == "create" ] && [ "$ARG2" != "" ]; then
     fi
 
 elif [ "$ARG1" == "add" ] && [ "$ARG2" == "portmap" ]; then
-    echo "ciao"
+    dbox list containers
+    HOST_PORT=""
+    CONTAINER_IP=""
+    CONTAINER_PORT=""
+    PROTOCOL="" #tcp or udp
+    echo -n "HOST PORT: "
+    read HOST_PORT
+    echo -n "CONTAINER IP: "
+    read CONTAINER_IP
+    echo -n "CONTAINER PORT: "
+    read CONTAINER_PORT
+    echo -n "PROTOCOL: "
+    read PROTOCOL
+
+    cat >> /etc/dbox/portmappings << EOF
+#BOB_PORTMAPPING_$HOST_PORT -> $CONTAINER_IP:$CONTAINER_PORT
+iptables -t nat -A PREROUTING -p $PROTOCOL -m $PROTOCOL --dport $HOST_PORT -j DNAT --to-destination $CONTAINER_IP:$CONTAINER_PORT
+iptables -t nat -A OUTPUT -o lo -p $PROTOCOL -m multiport --dports $HOST_PORT -j DNAT --to-destination $CONTAINER_IP:$CONTAINER_PORT
+#EOB_PORTMAPPING_$HOST_PORT
+
+EOF
+    /bin/bash /etc/dbox/portmappings
+
 
 elif [ "$ARG1" == "del" ] && [ "$ARG2" == "portmap" ]; then
     echo "ciao"
 
-elif [ "$ARG1" == "list" ] && [ "$ARG2" == "portmap" ]; then
+elif [ "$ARG1" == "list" ] && [ "$ARG2" == "portmap" -o "$ARG2" == "portmaps" ]; then
     echo "ciao"
 
 elif [ "$ARG1" == "list" ] && [ "$ARG2" == "" ]; then
