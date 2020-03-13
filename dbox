@@ -3,7 +3,7 @@
 ARG1=$1
 ARG2=$2
 VERSION="0.1"
-BUILD="0.1.13"
+BUILD="0.1.14"
 ARCH="" #i386 || amd64 || arm64 || armhf  uname -m
 
 containerExists(){
@@ -92,6 +92,27 @@ elif [ "$ARG1" == "install" ] && [ "$ARG2" == "client" ]; then
     cp ./dbox /bin/dbox
 	chown root:root /bin/dbox
 	chmod 770 /bin/dbox
+
+    #IF cartella e file non esistono
+    mkdir -p /etc/dbox
+
+    if [ -f "/etc/dbox/portmappings" ]; then
+        echo "File /etc/dbox/portmappings already exists"
+    else
+        touch /etc/dbox/portmappings
+        chmod 755 /etc/dbox/portmappings
+        echo -e "#!/bin/bash\n\n" > /etc/dbox/portmappings
+    fi
+
+    if [ -f "/etc/rc.local" ]; then
+        sed -i '1 a /etc/dbox/portmappings' /etc/rc.local
+    else
+        touch /etc/rc.local
+        chmod 755 /etc/rc.local
+        echo -e "#!/bin/bash\n\n" > /etc/rc.local
+        echo "/etc/dbox/portmappings" >> /etc/rc.local
+    fi
+
 	echo -e "\nDBOX CLIENT - INSTALLED"
     echo -e "\n"
 
@@ -125,7 +146,14 @@ elif [ "$ARG1" == "create" ] && [ "$ARG2" != "" ]; then
         $0 list templates
     fi
 
+elif [ "$ARG1" == "add" ] && [ "$ARG2" == "portmap" ]; then
+    echo "ciao"
 
+elif [ "$ARG1" == "del" ] && [ "$ARG2" == "portmap" ]; then
+    echo "ciao"
+
+elif [ "$ARG1" == "list" ] && [ "$ARG2" == "portmap" ]; then
+    echo "ciao"
 
 elif [ "$ARG1" == "list" ] && [ "$ARG2" == "" ]; then
     $0 list containers
