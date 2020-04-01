@@ -2,8 +2,8 @@
 
 ARG1=$1
 ARG2=$2
-VERSION="0.1"
-BUILD="0.1.16"
+VERSION="0.2"
+BUILD="0.2.0"
 ARCH="" #i386 || amd64 || arm64 || armhf  uname -m
 
 containerExists(){
@@ -179,7 +179,9 @@ elif [ "$ARG1" == "del" ] && [ "$ARG2" == "portmap" ]; then
     echo "dbox del portmap"
 
 elif [ "$ARG1" == "list" ] && [ "$ARG2" == "portmap" -o "$ARG2" == "portmaps" ]; then
-    echo "dbox list portmaps"
+    echo ""
+    grep BOB_PORTMAPPING /etc/dbox/portmappings|cut -c 18-
+    echo ""
 
 elif [ "$ARG1" == "list" ] && [ "$ARG2" == "" ]; then
     $0 list containers
