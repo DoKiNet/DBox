@@ -3,7 +3,7 @@
 ARG1=$1
 ARG2=$2
 VERSION="0.1"
-BUILD="0.1.15"
+BUILD="0.1.16"
 ARCH="" #i386 || amd64 || arm64 || armhf  uname -m
 
 containerExists(){
@@ -104,7 +104,12 @@ elif [ "$ARG1" == "install" ] && [ "$ARG2" == "client" ]; then
     fi
 
     if [ -f "/etc/rc.local" ]; then
-        sed -i '1 a /etc/dbox/portmappings' /etc/rc.local
+        if grep -q "/etc/dbox/portmappings" /etc/rc.local; then
+            echo ""
+        else
+            sed -i '1 a /etc/dbox/portmappings' /etc/rc.local
+        fi
+
     else
         touch /etc/rc.local
         chmod 755 /etc/rc.local
@@ -171,10 +176,10 @@ EOF
 
 
 elif [ "$ARG1" == "del" ] && [ "$ARG2" == "portmap" ]; then
-    echo "ciao"
+    echo "dbox del portmap"
 
 elif [ "$ARG1" == "list" ] && [ "$ARG2" == "portmap" -o "$ARG2" == "portmaps" ]; then
-    echo "ciao"
+    echo "dbox list portmaps"
 
 elif [ "$ARG1" == "list" ] && [ "$ARG2" == "" ]; then
     $0 list containers
