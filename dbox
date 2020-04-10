@@ -3,7 +3,7 @@
 ARG1=$1
 ARG2=$2
 VERSION="0.2"
-BUILD="0.2.0"
+BUILD="0.2.1"
 ARCH="" #i386 || amd64 || arm64 || armhf  uname -m
 
 containerExists(){
@@ -172,7 +172,9 @@ iptables -t nat -A OUTPUT -o lo -p $PROTOCOL -m multiport --dports $HOST_PORT -j
 #EOB_PORTMAPPING_$HOST_PORT
 
 EOF
-    /bin/bash /etc/dbox/portmappings
+
+    iptables -t nat -A PREROUTING -p $PROTOCOL -m $PROTOCOL --dport $HOST_PORT -j DNAT --to-destination $CONTAINER_IP:$CONTAINER_PORT
+    iptables -t nat -A OUTPUT -o lo -p $PROTOCOL -m multiport --dports $HOST_PORT -j DNAT --to-destination $CONTAINER_IP:$CONTAINER_PORT
 
 
 elif [ "$ARG1" == "del" ] && [ "$ARG2" == "portmap" ]; then
