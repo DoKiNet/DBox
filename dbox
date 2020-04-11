@@ -3,7 +3,7 @@
 ARG1=$1
 ARG2=$2
 VERSION="0.2"
-BUILD="0.2.1"
+BUILD="0.2.2"
 ARCH="" #i386 || amd64 || arm64 || armhf  uname -m
 
 containerExists(){
@@ -178,7 +178,13 @@ EOF
 
 
 elif [ "$ARG1" == "del" ] && [ "$ARG2" == "portmap" ]; then
-    echo "dbox del portmap"
+    dbox list portmaps
+    echo -n "PORTMAP - HOST PORT: "
+    read HOST_PORT
+    sed -i "/#BOB_PORTMAPPING_$HOST_PORT/,/#EOB_PORTMAPPING_$HOST_PORT/d" /etc/dbox/portmappings
+
+    iptables -t nat -S | grep -e "--dport $HOST_PORT" | cut -d " " -f 2- | xargs -rL1 iptables -t nat -D
+    iptables -t nat -S | grep -e "--dports $HOST_PORT" | cut -d " " -f 2- | xargs -rL1 iptables -t nat -D
 
 elif [ "$ARG1" == "list" ] && [ "$ARG2" == "portmap" -o "$ARG2" == "portmaps" ]; then
     echo ""
