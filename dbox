@@ -3,7 +3,7 @@
 ARG1=$1
 ARG2=$2
 VERSION="0.3"
-BUILD="0.3.0"
+BUILD="0.3.1"
 ARCH="" #i386 || amd64 || arm64 || armhf  uname -m
 
 containerExists(){
@@ -165,17 +165,21 @@ elif [ "$ARG1" == "add" ] && [ "$ARG2" == "portmap" ]; then
     echo -n "PROTOCOL: "
     read PROTOCOL
 
+    #read A B C D <<<"${CONTAINER_IP//./ }"
+    #SUBNET=$A.$B.$C.0/24
+
     cat >> /etc/dbox/portmappings << EOF
 #BOB_PORTMAPPING_$HOST_PORT -> $CONTAINER_IP:$CONTAINER_PORT
 iptables -t nat -A PREROUTING -p $PROTOCOL -m $PROTOCOL --dport $HOST_PORT -j DNAT --to-destination $CONTAINER_IP:$CONTAINER_PORT
 iptables -t nat -A OUTPUT -o lo -p $PROTOCOL -m multiport --dports $HOST_PORT -j DNAT --to-destination $CONTAINER_IP:$CONTAINER_PORT
+iptables -I FORWARD -m state -d $CONTAINER_IP --state NEW,RELATED,ESTABLISHED -j ACCEPT
 #EOB_PORTMAPPING_$HOST_PORT
 
 EOF
 
     iptables -t nat -A PREROUTING -p $PROTOCOL -m $PROTOCOL --dport $HOST_PORT -j DNAT --to-destination $CONTAINER_IP:$CONTAINER_PORT
     iptables -t nat -A OUTPUT -o lo -p $PROTOCOL -m multiport --dports $HOST_PORT -j DNAT --to-destination $CONTAINER_IP:$CONTAINER_PORT
-
+    iptables -I FORWARD -m state -d $CONTAINER_IP --state NEW,RELATED,ESTABLISHED -j ACCEPT
 
 elif [ "$ARG1" == "del" ] && [ "$ARG2" == "portmap" ]; then
     dbox list portmaps
